@@ -5,11 +5,13 @@ import {
   faHome,
   faNewspaper,
   faEnvelope,
+  faTag,
 } from '@fortawesome/free-solid-svg-icons';
 
 import Home from '../../Screens/Home';
 import ArticleScreen from '../../Screens/ArticleScreen.tsx';
 import ContactScreen from '../../Screens/ContactScreen';
+import CategoryScreen from '../../Screens/CategoryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,6 +31,7 @@ const BottomTabBar = ({navigation}) => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
+        headerShown: false,
         tabBarIcon: ({color, focused}) => {
           let iconName;
           if (route.name === 'Home') {
@@ -37,10 +40,13 @@ const BottomTabBar = ({navigation}) => {
             iconName = faNewspaper;
           } else if (route.name === 'Contact') {
             iconName = faEnvelope;
+          } else if (route.name === 'Category') {
+            iconName = faTag;
           }
-          return renderTabBarIcon(iconName, focused ? '#000' : '#ccc');
+
+          return renderTabBarIcon(iconName, focused ? '#FF9800' : '#ccc');
         },
-        tabBarActiveTintColor: '#000',
+        tabBarActiveTintColor: '#FF9800',
         tabBarInactiveTintColor: '#ccc',
         tabBarLabelStyle: {
           fontSize: 12,
@@ -68,6 +74,13 @@ const BottomTabBar = ({navigation}) => {
         component={ContactScreen}
         listeners={{
           tabPress: () => handleTabPress('Contact'),
+        }}
+      />
+      <Tab.Screen
+        name="Category"
+        component={CategoryScreen}
+        listeners={{
+          tabPress: () => handleTabPress('Category'),
         }}
       />
     </Tab.Navigator>

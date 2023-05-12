@@ -1,11 +1,21 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import BottomTabBar from './src/components/UI/BottomTabBar';
 import ArticleDetail from './src/components/Article/ArticleDetail';
 import ContactScreen from './src/Screens/ContactScreen';
+import {Image, View} from 'react-native';
+import BottomTabBar from './src/components/UI/BottomTabBar';
+import ArticleScreen from './src/Screens/ArticleScreen';
 
 const Stack = createStackNavigator();
+
+export const LogoTitle = () => {
+  return (
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <Image source={require('./src/assets/images/logo.png')} />
+    </View>
+  );
+};
 
 function App() {
   return (
@@ -14,7 +24,13 @@ function App() {
         <Stack.Screen
           name="main"
           component={BottomTabBar}
-          options={{headerShown: false}}
+          options={{
+            headerLeft: () => {
+              return <LogoTitle />;
+            },
+            headerTitleAlign: 'center', // Aggiungi questa opzione
+            headerShown: true, // Imposta a true per mostrare la barra superiore
+          }}
         />
         <Stack.Screen
           name="ArticleDetail"
