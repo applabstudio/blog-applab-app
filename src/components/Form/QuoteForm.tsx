@@ -140,6 +140,13 @@ const QuoteForm = () => {
   ];
 
   const fieldLabels = {
+    name: 'Nome',
+    surname: 'Cognome',
+    email: 'Email',
+    phoneNumber: 'Numero di telefono',
+    businessName: 'Nome azienda',
+    businessType: 'Tipo di azienda',
+    website: 'Sito web',
     choice1: 'Choice 1',
     choice2: 'Choice 2',
     nomeSito: 'Nome Sito',
@@ -149,39 +156,44 @@ const QuoteForm = () => {
 
   const handleNext = formikProps => {
     // Validate fields for the current step
-    formikProps.validateForm().then(errors => {
-      const isStepValid = !Object.keys(errors).length;
+    const stepValidationSchema = steps[currentStep].validationSchema;
+    formikProps
+      .validateForm(formikProps.values, {context: {stepValidationSchema}})
+      .then(errors => {
+        const isStepValid = !Object.keys(errors).length;
 
-      // Check if all fields in the current step are touched
-      const isStepTouched = steps[currentStep].fields.every(field => {
-        // Check for string values for choice1, choice2, nomeSito, and logoFile
-        if (
-          field.startsWith('choice') ||
-          field === 'nomeSito' ||
-          field === 'logoFile'
-        ) {
-          return typeof formikProps.values[field] === 'string';
+        // Check if all fields in the current step are touched
+        const isStepTouched = steps[currentStep].fields.every(field => {
+          // Check for string values for choice1, choice2, nomeSito, and logoFile
+          if (
+            field.startsWith('choice1') ||
+            field === 'nomeSito' ||
+            field === 'logoFile'
+          ) {
+            return typeof formikProps.values[field] === 'string';
+          }
+          return formikProps.touched[field];
+        });
+
+        if (isStepTouched && isStepValid) {
+          // Proceed to the next step only after validation
+          setCurrentStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
+
+          // Dismiss the keyboard
+          Keyboard.dismiss();
+        } else {
+          // If the current step is not valid, set touched for all fields to display errors
+          formikProps.setTouched(
+            steps[currentStep].fields.reduce((acc, field) => {
+              acc[field] = true;
+              return acc;
+            }, {}),
+          );
+          console.log(
+            'Completa tutti i campi correttamente prima di procedere.',
+          );
         }
-        return formikProps.touched[field];
       });
-
-      if (isStepTouched && isStepValid) {
-        // Proceed to the next step only after validation
-        setCurrentStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
-
-        // Dismiss the keyboard
-        Keyboard.dismiss();
-      } else {
-        // If the current step is not valid, set touched for all fields to display errors
-        formikProps.setTouched(
-          steps[currentStep].fields.reduce((acc, field) => {
-            acc[field] = true;
-            return acc;
-          }, {}),
-        );
-        console.log('Completa tutti i campi correttamente prima di procedere.');
-      }
-    });
   };
 
   const handleSubmitForm = values => {
@@ -301,22 +313,9 @@ const QuoteForm = () => {
                             </Card>
                           ),
                         )}
-                        {formikProps.touched[field] &&
-                          formikProps.errors[field] && (
-                            <Text style={styles.errorText}>
-                              {formikProps.errors[field]}
-                            </Text>
-                          )}
                       </View>
                     )}
 
-                    {field === 'logoFile' && (
-                      <FileInput
-                        field="logoFile"
-                        form={formikProps}
-                        label={fieldLabels[field]}
-                      />
-                    )}
                     {field === 'choice2' && (
                       <View style={styles.choicesContainer}>
                         <Title>Scegli le funzionalità</Title>
@@ -356,6 +355,13 @@ const QuoteForm = () => {
                           )}
                       </View>
                     )}
+                    {field === 'logoFile' && (
+                      <FileInput
+                        field="logoFile"
+                        form={formikProps}
+                        label={fieldLabels[field]}
+                      />
+                    )}
                   </View>
                 ))}
 
@@ -379,7 +385,7 @@ const QuoteForm = () => {
                     </Button>
                   )}
 
-                  {currentStep === steps.length - 1 && (
+                  {currentStep > 2 && (
                     <Button
                       mode="contained"
                       onPress={() => formikProps.handleSubmit()}
