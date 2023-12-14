@@ -271,15 +271,19 @@ const QuoteForm = () => {
 
                 {steps[currentStep].fields.map((field, index) => (
                   <View key={index} style={styles.inputContainer}>
-                    <CustomInput
-                      placeholder={fieldLabels[field]}
-                      value={formikProps.values[field]}
-                      onChangeText={formikProps.handleChange(field)}
-                      onBlur={formikProps.handleBlur(field)}
-                      error={
-                        formikProps.touched[field] && formikProps.errors[field]
-                      }
-                    />
+                    {field !== 'choice1' &&
+                      field !== 'choice2' && ( // Condizione per escludere 'choice1' e 'choice2' dal rendering di CustomInput
+                        <CustomInput
+                          placeholder={fieldLabels[field]}
+                          value={formikProps.values[field]}
+                          onChangeText={formikProps.handleChange(field)}
+                          onBlur={formikProps.handleBlur(field)}
+                          error={
+                            formikProps.touched[field] &&
+                            formikProps.errors[field]
+                          }
+                        />
+                      )}
                     {field === 'choice1' && (
                       <View style={styles.choicesContainer}>
                         <Title>Scegli la tipologia di sito</Title>

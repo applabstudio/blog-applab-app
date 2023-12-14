@@ -50,7 +50,6 @@ target 'BlogAppAppLab' do
 
 end
 
-
 post_install do |installer|
   installer.aggregate_targets.each do |target|
     target.xcconfigs.each do |variant, xcconfig|
