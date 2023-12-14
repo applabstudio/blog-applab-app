@@ -139,6 +139,14 @@ const QuoteForm = () => {
     },
   ];
 
+  const fieldLabels = {
+    choice1: 'Choice 1',
+    choice2: 'Choice 2',
+    nomeSito: 'Nome Sito',
+    logoFile: 'Logo File',
+    // Aggiungi altre etichette secondo necessità
+  };
+
   const handleNext = formikProps => {
     // Validate fields for the current step
     formikProps.validateForm().then(errors => {
@@ -178,7 +186,6 @@ const QuoteForm = () => {
 
   const handleSubmitForm = values => {
     console.log('Dati inviati:', values);
-    // Aggiungi qui la tua logica per l'invio del form se necessario
   };
 
   return (
@@ -253,7 +260,7 @@ const QuoteForm = () => {
                 {steps[currentStep].fields.map((field, index) => (
                   <View key={index} style={styles.inputContainer}>
                     <CustomInput
-                      placeholder={field}
+                      placeholder={fieldLabels[field]}
                       value={formikProps.values[field]}
                       onChangeText={formikProps.handleChange(field)}
                       onBlur={formikProps.handleBlur(field)}
@@ -307,7 +314,7 @@ const QuoteForm = () => {
                       <FileInput
                         field="logoFile"
                         form={formikProps}
-                        label="Allega un logo per il sito"
+                        label={fieldLabels[field]}
                       />
                     )}
                     {field === 'choice2' && (
